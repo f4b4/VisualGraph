@@ -1,0 +1,9 @@
+VisualGraph TODO
+--------------------------------------------------------------------------------
+
+* CMakeLists for oggl_test 
+* make debug
+* application icon
+* execute layout algorithms
+  * parameter setting of layouts
+
