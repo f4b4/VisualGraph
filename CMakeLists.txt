@@ -53,7 +53,7 @@ else ()
 	if (NOT OGDF_INCLUDE_DIR OR NOT OGDF_LIBRARY)
 		message (FATAL_ERROR 
 			"OGDF not found, please call cmake with "
-			"-DOGDF_INCLUDE_DIR:PATH=<full path to OGDF include director> add_definitionsd"
+			"-DOGDF_INCLUDE_DIR:PATH=<full path to OGDF include director>"
 			"-DOGDF_LIBRARY:FILEPATH=<full path to OGDF library>")
 	endif ()
 

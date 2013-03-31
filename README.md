@@ -5,27 +5,24 @@ Welcome to VisualGraph, a viewer for the Open Graph Drawing Framework (OGDF).
 
 ![Visual Graph Screenshot](VisualGraph.png)
 
-
-LICENSE
+Modules
 --------------------------------------------------------------------------------
 
-The GL Load library in the directory VisualGraph/oggl/glload is distributed 
-under the MIT License.
+=== VisualGraph
 
-The other parts of the software are distributed under the terms of the 
-[GPLv3](<http://www.gnu.org/licenses/gpl-3.0.html>), in addition all special 
-exceptions of the OGDF are allowed, see 
-OGDF License <http://www.ogdf.net/doku.php/tech:license>. By using this 
-software you agree to these license terms.
+Viewer for Linux and Windows using the QT-Library.
 
-COPYRIGHT
---------------------------------------------------------------------------------
+=== oggl
 
-All files in the VisualGraph distribution are copyrighted.
+Library for displaying OGDF graphs with OpenGL.
 
-All files with the exception of the GL Load library:
+=== oggl-test
 
-Copyright (C) 2013 The VisualGraph Authors
+Test project for oggl.
+
+=== glut_app
+
+Lightweight graph viewer using GLUT.
 
 
 Prerequisites
@@ -84,4 +81,26 @@ On Windows:
 		-DOGDF_DEBUG_LIBRARY:FILEPATH=<full path to OGDF DEBUG library> \
 		-DOGDF_RELEASE_LIBRARY:FILEPATH=<full path to OGDF RELEASE library> \
 		..
+
+LICENSE
+--------------------------------------------------------------------------------
+
+The GL Load library in the directory VisualGraph/oggl/glload is distributed 
+under the MIT License.
+
+The other parts of the software are distributed under the terms of the 
+[GPLv3](<http://www.gnu.org/licenses/gpl-3.0.html>), in addition all special 
+exceptions of the OGDF are allowed, see 
+OGDF License <http://www.ogdf.net/doku.php/tech:license>. By using this 
+software you agree to these license terms.
+
+COPYRIGHT
+--------------------------------------------------------------------------------
+
+All files in the VisualGraph distribution are copyrighted.
+
+All files with the exception of the GL Load library:
+
+Copyright (C) 2013 The VisualGraph Authors
+
 

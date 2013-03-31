@@ -1,7 +1,7 @@
 VisualGraph TODO
 --------------------------------------------------------------------------------
 
-* CMakeLists for oggl_test 
+* CMakeLists for oggl_test and glut_app
 * make debug
 * application icon
 * execute layout algorithms
