@@ -8,19 +8,19 @@ Welcome to VisualGraph, a viewer for the Open Graph Drawing Framework (OGDF).
 Modules
 --------------------------------------------------------------------------------
 
-=== VisualGraph
+### VisualGraph
 
 Viewer for Linux and Windows using the QT-Library.
 
-=== oggl
+### oggl
 
 Library for displaying OGDF graphs with OpenGL.
 
-=== oggl-test
+### oggl-test
 
 Test project for oggl.
 
-=== glut_app
+### glut_app
 
 Lightweight graph viewer using GLUT.
 
