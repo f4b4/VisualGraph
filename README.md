@@ -30,7 +30,7 @@ Prerequisites
 --------------------------------------------------------------------------------
 
 * OGDF
-* QT4
+* QT4.8
 * OpenGL 3.3
 * cmake 2.6 or higher
 
@@ -71,8 +71,8 @@ The solution VisualGraph.sln should now be in the build directory.
 You can use Visual Studio 2012 but Platform Toolset has to be 
 "Visual Studio 2010 (v100)" (because QT4 is builded with VS2010).
 
-If the QT DLLs are not in the path, copy the relevant DLLs side by side to 
-VisualGraph.exe:
+You need the QT 4.8.x VS2010 DLLs, if they are not in the path, copy the relevant 
+DLLs side by side to the VisualGraph.exe:
 
 	Debug build:   QtCored4.dll, QtGuid4.dll, QtOpenGLd4.dll
 	Release build: QtCore4.dll,  QtGui4.dll,  QtOpenGL4.dll
