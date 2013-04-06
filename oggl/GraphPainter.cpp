@@ -219,11 +219,13 @@ void GraphPainter::Initialize()
 {
 	// glload-initialize
 	if (LoadFunctions() == LS_LOAD_FAILED)
-	{
-	}
+		throw std::runtime_error("OpenGL Function loading failed.");
 
 	int major = GetMajorVersion();
 	int minor = GetMinorVersion();
+
+	if (major < 3 || major == 3 && minor < 3)
+		throw std::runtime_error("OpenGL at least version 3.3 is needed.");
 
 	m_shaders["default"] = std::make_shared<Shader>(g_defaultVertexShader, g_defaultFragmentShader);
 	m_shaders["nodesBorder"] = std::make_shared<Shader>(g_nodesBorderVertexShader, g_defaultFragmentShader);
