@@ -2,6 +2,9 @@
 
 #include <array>
 #include <string>
+#include <ostream>
+
+using namespace std;
 
 namespace oggl {
 
@@ -42,7 +45,7 @@ public:
 
 inline std::ostream& operator<< (std::ostream& stream, const V4& vec)
 {
-	stream << std::string("("); // << vec[0]; // << ", " << vec[1] << ", " << vec[2] << ", " << vec[3] << ")";
+    stream << "(" << vec[0] << ", " << vec[1] << ", " << vec[2] << ", " << vec[3] << ")";
 	return stream;
 }
 
@@ -141,11 +144,11 @@ public:
 	// row-major -> col-major
 	std::array<float, 16> Transpose() const
 	{
-		std::array<float, 16> ar = {
+        std::array<float, 16> ar = {{
 			m_ar[0], m_ar[4], m_ar[ 8],  m_ar[12],
 			m_ar[1], m_ar[5], m_ar[ 9],  m_ar[13],
 			m_ar[2], m_ar[6], m_ar[10],  m_ar[14],
-			m_ar[3], m_ar[7], m_ar[11],  m_ar[15]};
+            m_ar[3], m_ar[7], m_ar[11],  m_ar[15]}};
 		return ar;
 	}
 

@@ -37,7 +37,7 @@ const int g_sliderSingleStep = 10;
 const int g_sliderPageStep = 100;
 
 const float g_defaultNodeWidth = 10;
-const float g_defaultEdgeLength = 40;
+const float g_defaultEdgeLength = 20;
 
 // scale-slider:
 // slider:     0 - 1600
@@ -47,8 +47,8 @@ int ScaleToZoomSlider(float scale) { return std::log(scale)/std::log(2.f) * 100 
 
 GraphWidget::GraphWidget(QWidget* parent)
 	: QWidget(parent)
-	, m_eventsEnabled(true)
 	, m_mouseMoveStarted(false)
+    , m_eventsEnabled(true)
 {
 	m_graphPainter = std::make_shared<oggl::GraphPainter>();
 	m_canvas = std::make_shared<GraphCanvas>(this, m_graphPainter);
@@ -111,7 +111,7 @@ void GraphWidget::ZoomToOrignalSize()
 void GraphWidget::OnZoomSliderValueChanged(int value)
 {
 #ifdef _DEBUG
-	oggl::dout << "GraphWidget::OnZoomSliderValueChanged" << "value=" << value << std::endl;
+    oggl::dout << "GraphWidget::OnZoomSliderValueChanged" << ": value=" << value << std::endl;
 #endif
 
 	if (!m_eventsEnabled) return;
@@ -125,7 +125,7 @@ void GraphWidget::OnZoomSliderValueChanged(int value)
 void GraphWidget::OnHScrollValueChanged(int value)
 {
 #ifdef _DEBUG
-	oggl::dout << "GraphWidget::OnHScrollValueChanged" << "value=" << value << std::endl;
+    oggl::dout << "GraphWidget::OnHScrollValueChanged" << ": value=" << value << std::endl;
 #endif
 
 	if (!m_eventsEnabled) return;
@@ -151,7 +151,7 @@ void GraphWidget::OnHScrollValueChanged(int value)
 void GraphWidget::OnVScrollValueChanged(int value)
 {
 #ifdef _DEBUG
-	oggl::dout << "GraphWidget::OnVScrollValueChanged" << "value=" << value << std::endl;
+    oggl::dout << "GraphWidget::OnVScrollValueChanged" << ": value=" << value << std::endl;
 #endif
 
 	if (!m_eventsEnabled) return;
@@ -287,28 +287,36 @@ void GraphWidget::SetScrollValues()
 	m_zoomSlider->setValue(ScaleToZoomSlider(m_graphPainter->Scale()));
 }
 
-void GraphWidget::OpenFile(const std::string& filepath)
+bool GraphWidget::OpenFile(const std::string& filepath)
 {
 	QFile file(filepath.c_str());
 	if (!file.exists()) throw std::runtime_error("File does not exist.");
 
-	auto graph = std::make_shared<ogdf::Graph>();
+    // destroy old graph
+    m_graphPainter->SetGraphAttributes(nullptr);
+    m_graphAttributes = nullptr;
+    m_graph = nullptr;
+
+    auto graph = std::make_shared<ogdf::Graph>();
 	auto graphAttributes = std::make_shared<ogdf::GraphAttributes>(*graph.get());
 
 	graphAttributes->initAttributes(0x2FFFF);
 
-	bool ret = graphAttributes->readGML(*graph.get(), filepath.c_str());
-	if (!ret) ret = graphAttributes->readRudy(*graph.get(), filepath.c_str());
-	if (!ret) ret = graphAttributes->readXML(*graph.get(), filepath.c_str());
+    bool readSuccess = graphAttributes->readGML(*graph.get(), filepath.c_str());
 
-	m_graph = graph;
-	m_graphAttributes = graphAttributes;
+    if (readSuccess)
+    {
+        m_graph = graph;
+        m_graphAttributes = graphAttributes;
 
-	m_graphPainter->SetGraphAttributes(m_graphAttributes);
-	m_graphPainter->ZoomToFit();
+        m_graphPainter->SetGraphAttributes(m_graphAttributes);
+        m_graphPainter->ZoomToFit();
+    }
 
 	SetScrollValues();
 	m_canvas->update();
+
+    return readSuccess;
 }
 
 void GraphWidget::ExecuteLayout()
@@ -317,9 +325,6 @@ void GraphWidget::ExecuteLayout()
 	if (!graphAttributes) throw std::runtime_error("No graph is loaded.");
 
 	ogdf::FMMMLayout fmmm;
-
-
-
 	fmmm.useHighLevelOptions(true);
 	fmmm.unitEdgeLength(g_defaultEdgeLength); 
 	fmmm.newInitialPlacement(true);
@@ -367,7 +372,7 @@ void GraphWidget::wheelEvent(QWheelEvent* event)
 	if (Qt::Vertical == event->orientation())
 	{
 #ifdef _DEBUG
-		oggl::dout << "GraphWidget::wheelEvent: " << "QWheelEvent::delta=" << event->delta() << std::endl;
+        oggl::dout << "GraphWidget::wheelEvent" << ": QWheelEvent::delta=" << event->delta() << std::endl;
 #endif
 
 		QPoint ptCanvas = m_canvas->mapFromGlobal(event->globalPos());
@@ -438,7 +443,6 @@ void GraphWidget::mouseMoveEvent(QMouseEvent* event)
 			QPoint pos = event->pos();
 
 			float scale = m_graphPainter->Scale();
-			auto view = m_graphPainter->View();
 
 			int idx = m_mouseStart[0] - pos.x();
 			int idy = m_mouseStart[1] - pos.y();
