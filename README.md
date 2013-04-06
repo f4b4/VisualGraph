@@ -14,7 +14,7 @@ Viewer for Linux and Windows using the QT-Library.
 
 ### oggl
 
-Library for displaying very big OGDF graphs with OpenGL, it does render 
+Library for displaying very large OGDF graphs with OpenGL, it does render 
 1,000,000 nodes smoothly.
 
 ### oggl-test
@@ -30,7 +30,7 @@ Prerequisites
 --------------------------------------------------------------------------------
 
 * OGDF
-* QT4
+* QT4.8
 * OpenGL 3.3
 * cmake 2.6 or higher
 
@@ -48,10 +48,7 @@ Build
 VisualGraph uses cmake as meta build system, cmake generates on Linux a 
 Makefile and on Windows a Visual Studio solution. 
 
-OGDF and VisualGraph directories should be in the same parent directory, so that
-cmake can find the OGDF include directoy and the library automatically.
-
-Build on Linux:
+### Building on Linux
 
 	$ cd <VisualGraph root directory>
 	$ mkdir build
@@ -59,14 +56,31 @@ Build on Linux:
 	$ cmake ..
 	$ make
 
-Build on Windows:
+If you use a nVidia graphic card, you need the nVidia proprietary driver, because 
+the Nouveau driver does not support accelerated OpenGL.
+
+### Building on Windows
 
 	> cd <VisualGraph root directory>
 	> mkdir build
 	> cd build
 	> cmake ..
 
-	The solution VisualGraph.sln should now be in the build directory.
+The solution VisualGraph.sln should now be in the build directory.
+
+You can use Visual Studio 2012 but Platform Toolset has to be 
+"Visual Studio 2010 (v100)" (because QT4 is builded with VS2010).
+
+You need the QT 4.8.x VS2010 DLLs, if they are not in the path, copy the relevant 
+DLLs side by side to the VisualGraph.exe:
+
+	Debug build:   QtCored4.dll, QtGuid4.dll, QtOpenGLd4.dll
+	Release build: QtCore4.dll,  QtGui4.dll,  QtOpenGL4.dll
+
+### OGDF library
+
+OGDF and VisualGraph directories should be in the same parent directory, so that
+cmake can find the OGDF include directoy and the library automatically.
 
 If the OGDF library is not found by cmake, issue the following commandline with 
 the full paths to your OGDF:
@@ -103,5 +117,3 @@ All files in the VisualGraph distribution are copyrighted.
 All files with the exception of the GL Load library:
 
 Copyright (C) 2013 The VisualGraph Authors
-
-
