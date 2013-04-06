@@ -12,8 +12,8 @@
 #include <vector>
 #include <string>
 
-#include <glload/gl_3_3_comp.h>
-#include <glload/gll.h>
+#include <glload/gl_3_3_comp.hpp>
+#include <glload/gll.hpp>
 
 namespace oggl {
 
@@ -59,10 +59,10 @@ GraphPainter::~GraphPainter()
 
 void GraphPainter::Reset()
 {
-	if (m_nodesVertexBuffer) glDeleteBuffers(1, &m_nodesVertexBuffer);
-	if (m_nodesIndexBuffer) glDeleteBuffers(1, &m_nodesIndexBuffer);
-	if (m_nodesBorderIndexBuffer) glDeleteBuffers(1, &m_nodesBorderIndexBuffer);
-	if (m_edgesVertexBuffer) glDeleteBuffers(1, &m_edgesVertexBuffer);
+    if (m_nodesVertexBuffer) gl::DeleteBuffers(1, &m_nodesVertexBuffer);
+    if (m_nodesIndexBuffer) gl::DeleteBuffers(1, &m_nodesIndexBuffer);
+    if (m_nodesBorderIndexBuffer) gl::DeleteBuffers(1, &m_nodesBorderIndexBuffer);
+    if (m_edgesVertexBuffer) gl::DeleteBuffers(1, &m_edgesVertexBuffer);
 
 	m_nodesVertexBuffer = 0;
 	m_nodesIndexBuffer = 0;
@@ -75,47 +75,14 @@ void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttribute
 	Reset();
 
 	m_graphAttributes = graphAttributes;
-
-	size_t i = 0;
-
-	// bounds
-	Rect model = Model();
-	
-	std::array<float, 4 * 4 * 4> boundQuadVertices;
-	std::array<float, 5 * 4 * 4> boundLineStripVertices;
-
-	boundQuadVertices[i+0] = boundLineStripVertices[i+0] = model[0];
-	boundQuadVertices[i+1] = boundLineStripVertices[i+1] = model[1];
-	boundQuadVertices[i+2] = boundLineStripVertices[i+2] = g_defaultZValue;
-	boundQuadVertices[i+3] = boundLineStripVertices[i+3] = g_defaultWValue;
-	i += 4;
-	boundQuadVertices[i+0] = boundLineStripVertices[i+0] = model[0];
-	boundQuadVertices[i+1] = boundLineStripVertices[i+1] = model[3];
-	boundQuadVertices[i+2] = boundLineStripVertices[i+2] = g_defaultZValue;
-	boundQuadVertices[i+3] = boundLineStripVertices[i+3] = g_defaultWValue;
-	i += 4;
-	boundQuadVertices[i+0] = boundLineStripVertices[i+0] = model[2];
-	boundQuadVertices[i+1] = boundLineStripVertices[i+1] = model[3];
-	boundQuadVertices[i+2] = boundLineStripVertices[i+2] = g_defaultZValue;
-	boundQuadVertices[i+3] = boundLineStripVertices[i+3] = g_defaultWValue;
-	i += 4;
-	boundQuadVertices[i+0] = boundLineStripVertices[i+0] = model[2];
-	boundQuadVertices[i+1] = boundLineStripVertices[i+1] = model[1];
-	boundQuadVertices[i+2] = boundLineStripVertices[i+2] = g_defaultZValue;
-	boundQuadVertices[i+3] = boundLineStripVertices[i+3] = g_defaultWValue;
-	i += 4;
-	boundLineStripVertices[i+0] = model[0];
-	boundLineStripVertices[i+1] = model[1];
-	boundLineStripVertices[i+2] = g_defaultZValue;
-	boundLineStripVertices[i+3] = g_defaultWValue;
-	i += 4;
+    if (!m_graphAttributes) return;
 
 	// nodes
 	std::vector<Vertex> nodesVectorVec;
 	std::vector<uint> nodesIndexVec;
 	std::vector<uint> nodesBorderIndexVec;
 
-	i = 0;
+    size_t i = 0;
 	for_each(m_graphAttributes->constGraph().firstNode(), [&](const ogdf::node& item) 
 	{ 
 		float x1 = (float) (m_graphAttributes->x(item) - m_graphAttributes->width(item)/2.0);
@@ -161,20 +128,20 @@ void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttribute
 	m_nodesIndexCount = nodesIndexVec.size();
 	m_nodesBorderIndexCount = nodesBorderIndexVec.size();
 
-	glGenBuffers(1, &m_nodesVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_nodesVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_nodesVertexCount, nodesVectorVec.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    gl::GenBuffers(1, &m_nodesVertexBuffer);
+    gl::BindBuffer(gl::GL_ARRAY_BUFFER, m_nodesVertexBuffer);
+    gl::BufferData(gl::GL_ARRAY_BUFFER, sizeof(Vertex) * m_nodesVertexCount, nodesVectorVec.data(), gl::GL_STATIC_DRAW);
+    gl::BindBuffer(gl::GL_ARRAY_BUFFER, 0);
 
-	glGenBuffers(1, &m_nodesIndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_nodesIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_nodesIndexCount, nodesIndexVec.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    gl::GenBuffers(1, &m_nodesIndexBuffer);
+    gl::BindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_nodesIndexBuffer);
+    gl::BufferData(gl::GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_nodesIndexCount, nodesIndexVec.data(), gl::GL_STATIC_DRAW);
+	gl::BindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	glGenBuffers(1, &m_nodesBorderIndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_nodesBorderIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_nodesBorderIndexCount, nodesBorderIndexVec.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	gl::GenBuffers(1, &m_nodesBorderIndexBuffer);
+	gl::BindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_nodesBorderIndexBuffer);
+	gl::BufferData(gl::GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_nodesBorderIndexCount, nodesBorderIndexVec.data(), gl::GL_STATIC_DRAW);
+	gl::BindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// edges
 	std::vector<float> linesVertexVec;
@@ -209,21 +176,18 @@ void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttribute
 
 	m_edgesVertexCount = linesVertexVec.size() / 4;
 
-	glGenBuffers(1, &m_edgesVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_edgesVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * linesVertexVec.size(), linesVertexVec.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	gl::GenBuffers(1, &m_edgesVertexBuffer);
+	gl::BindBuffer(gl::GL_ARRAY_BUFFER, m_edgesVertexBuffer);
+	gl::BufferData(gl::GL_ARRAY_BUFFER, sizeof(float) * linesVertexVec.size(), linesVertexVec.data(), gl::GL_STATIC_DRAW);
+	gl::BindBuffer(gl::GL_ARRAY_BUFFER, 0);
 }
 
 void GraphPainter::Initialize()
 {
 	// glload-initialize
-	if (LoadFunctions() == LS_LOAD_FAILED)
+    if (glload::LoadFunctions() == glload::LS_LOAD_FAILED)
 	{
 	}
-
-	int major = GetMajorVersion();
-	int minor = GetMinorVersion();
 
 	m_shaders["default"] = std::make_shared<Shader>(g_defaultVertexShader, g_defaultFragmentShader);
 	m_shaders["nodesBorder"] = std::make_shared<Shader>(g_nodesBorderVertexShader, g_defaultFragmentShader);
@@ -239,26 +203,26 @@ void GraphPainter::Resize(int width, int height)
 	// http://stackoverflow.com/questions/5877728/want-an-opengl-2d-example-vc-draw-a-rectangle
 
 	// Set up the orthographic projection
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, width, height, 0, -1, 1);
+	gl::MatrixMode(gl::GL_PROJECTION);
+	gl::LoadIdentity();
+	gl::Ortho(0, width, height, 0, -1, 1);
 
 	// Back to the modelview so we can draw stuff 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	gl::MatrixMode(gl::GL_MODELVIEW);
+	gl::LoadIdentity();
 
 	//Clear the screen and depth buffer
-	glClear(GL_COLOR_BUFFER_BIT); 
+	gl::Clear(gl::GL_COLOR_BUFFER_BIT); 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// This sets up the viewport so that the coordinates (0, 0) are at the top left of the window
-	glViewport(0, 0, width, height);
+	gl::Viewport(0, 0, width, height);
 }
 
 void GraphPainter::Paint()
 {
-	glClearColor(m_backgroundColor[0], m_backgroundColor[1], m_backgroundColor[2], m_backgroundColor[3]);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	gl::ClearColor(m_backgroundColor[0], m_backgroundColor[1], m_backgroundColor[2], m_backgroundColor[3]);
+	gl::Clear(gl::GL_COLOR_BUFFER_BIT|gl::GL_DEPTH_BUFFER_BIT);
 
 	if (m_graphAttributes)
 	{
@@ -276,11 +240,11 @@ void GraphPainter::Paint()
 		edgesShader->Set("projMatrix", projMatrix);
 		edgesShader->Set("color", m_edgesColor);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_edgesVertexBuffer);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		glDrawArrays(GL_LINES, 0, m_edgesVertexCount * 4);
-		glDisableVertexAttribArray(0);
+		gl::BindBuffer(gl::GL_ARRAY_BUFFER, m_edgesVertexBuffer);
+		gl::EnableVertexAttribArray(0);
+		gl::VertexAttribPointer(0, 4, gl::GL_FLOAT, gl::GL_FALSE, 0, 0);
+		gl::DrawArrays(gl::GL_LINES, 0, m_edgesVertexCount * 4);
+		gl::DisableVertexAttribArray(0);
 
 		edgesShader->Use(false);
 
@@ -290,23 +254,23 @@ void GraphPainter::Paint()
 
 		nodesShader->Set("projMatrix", projMatrix);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_nodesVertexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_nodesIndexBuffer);
+		gl::BindBuffer(gl::GL_ARRAY_BUFFER, m_nodesVertexBuffer);
+		gl::BindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_nodesIndexBuffer);
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float)*4));
+		gl::EnableVertexAttribArray(0);
+		gl::VertexAttribPointer(0, 4, gl::GL_FLOAT, gl::GL_FALSE, sizeof(Vertex), 0);
+		gl::EnableVertexAttribArray(1);
+        gl::VertexAttribPointer(1, 4, gl::GL_FLOAT, gl::GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float)*4));
 
-		glDrawElements(GL_TRIANGLES, m_nodesIndexCount, GL_UNSIGNED_INT, NULL);
+        gl::DrawElements(gl::GL_TRIANGLES, m_nodesIndexCount, gl::GL_UNSIGNED_INT, NULL);
 
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		gl::DisableVertexAttribArray(0);
+		gl::DisableVertexAttribArray(1);
 
 		nodesShader->Use(false);
 
 		// nodes border
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_nodesBorderIndexBuffer);
+		gl::BindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, m_nodesBorderIndexBuffer);
 
 		const auto& nodesBorderShader = m_shaders["nodesBorder"];
 		nodesBorderShader->Use(true);
@@ -314,12 +278,12 @@ void GraphPainter::Paint()
 		nodesBorderShader->Set("projMatrix", projMatrix);
 		nodesBorderShader->Set("color", m_nodeBorderColor);
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+		gl::EnableVertexAttribArray(0);
+		gl::VertexAttribPointer(0, 4, gl::GL_FLOAT, gl::GL_FALSE, sizeof(Vertex), 0);
 
-		glDrawElements(GL_LINES, m_nodesBorderIndexCount, GL_UNSIGNED_INT, NULL);
+		gl::DrawElements(gl::GL_LINES, m_nodesBorderIndexCount, gl::GL_UNSIGNED_INT, NULL);
 
-		glDisableVertexAttribArray(0);
+		gl::DisableVertexAttribArray(0);
 
 		nodesBorderShader->Use(false);
 	}
@@ -437,7 +401,6 @@ void GraphPainter::ZoomToFit()
 	// show whole graph
 	auto world = World();
 	auto canvas = Canvas();
-	auto curView = View();
 
 	float scale = WorldCanvasScale(world, canvas);
 
@@ -461,7 +424,6 @@ void GraphPainter::ZoomToOrignalSize()
 {
 	auto world = World();
 	auto canvas = Canvas();
-	auto curView = View();
 
 	float scale = 1.f;
 
@@ -477,7 +439,7 @@ void GraphPainter::ZoomToOrignalSize()
 	View(view);
 
 #ifdef _DEBUG
-	dout << "ZoomToFit: " << "scale=" << scale << ", View=" << View() << std::endl;
+    dout << "ZoomToOrignalSize: " << "scale=" << scale << ", View=" << View() << std::endl;
 #endif
 }
 }

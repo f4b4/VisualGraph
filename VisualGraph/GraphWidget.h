@@ -23,7 +23,7 @@ public:
 	void ZoomToOrignalSize();
 
 
-	void OpenFile(const std::string& filepath);
+    bool OpenFile(const std::string& filepath);
 	void ExecuteLayout();
 
 	void CreateGraph();

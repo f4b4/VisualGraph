@@ -14,7 +14,8 @@ Viewer for Linux and Windows using the QT-Library.
 
 ### oggl
 
-Library for displaying OGDF graphs with OpenGL.
+Library for displaying very big OGDF graphs with OpenGL, it does render 
+1,000,000 nodes smoothly.
 
 ### oggl-test
 

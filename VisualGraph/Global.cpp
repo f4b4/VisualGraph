@@ -22,13 +22,9 @@ void RunGuiAction(QWidget* widget, std::function<void()> func)
 		{
 			func();
 		}
-		catch (std::exception& ex)
+        catch (std::exception& e)
 		{
-			QMessageBox msgBox(widget);
-			msgBox.setWindowTitle(g_applicationName);
-			msgBox.setText(ex.what());
-			msgBox.setIcon(QMessageBox::Critical);
-			msgBox.exec();
+            QMessageBox::critical(widget, g_applicationName, e.what());
 		}
 
 		running = false;

@@ -5,7 +5,6 @@
 namespace oggl {
 
 DebugOutStream<char>    dout;
-DebugOutStream<wchar_t> wdout;
 
 }
 

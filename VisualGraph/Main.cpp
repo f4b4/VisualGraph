@@ -52,9 +52,7 @@ int main(int argc, char *argv[])
 	}
 	catch (std::exception &e)
 	{
-		QMessageBox msgBox;
-		msgBox.critical(nullptr, g_applicationName, e.what());
-		msgBox.exec();
+        QMessageBox::critical(nullptr, g_applicationName, e.what());
 	}
 
 
