@@ -3,7 +3,7 @@
 
 #include "Global.h"
 
-#include "ui_VisualGraph.h"
+//#include "ui_VisualGraph.h"
 
 #include "WaitCursor.h"
 
@@ -12,6 +12,10 @@
 
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
+
+class QVBoxLayout;
+class GraphWidget;
+class QToolBar;
 
 class VisualGraph : public QMainWindow
 {
@@ -22,7 +26,7 @@ public:
 	~VisualGraph();
 
 	void LoadFile(const std::string& filepath);
-	void CreateGraph() { ui.m_graphWidget->CreateGraph(); }
+	void CreateGraph();
 
 protected:
 	virtual void keyPressEvent(QKeyEvent * event);
@@ -42,11 +46,17 @@ private slots:
 
 private:
 	void OpenFile(const std::string& filepath);
-	void AddAction(const char* text, const char* toolTip, const QKeySequence &key, const char* method);
+    void AddAction(const char* text, const char* icon, const char* toolTip, const QKeySequence &key, const char* method);
 	void AddSeparator();
 
 private:
-	Ui::VisualGraphClass ui;
+//	Ui::VisualGraphClass ui;
+
+	QWidget* m_centralWidget;
+	QVBoxLayout* m_layout;
+	QToolBar* m_toolBar;
+	GraphWidget* m_graphWidget;
+
 };
 
 

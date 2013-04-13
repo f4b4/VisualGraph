@@ -1,4 +1,11 @@
 <RCC>
-    <qresource prefix="VisualGraph">
+    <qresource prefix="/VisualGraph">
+		<file>Icons/graph_16x16.png</file>
+		<file>Icons/open_16x16.png</file>
+		<file>Icons/zoom-1to1_16x16.png</file>
+		<file>Icons/zoom-in_16x16.png</file>
+		<file>Icons/zoom-out_16x16.png</file>
+		<file>Icons/zoom-to-fit_16x16.png</file>
+		<file>Icons/execute_16x16.png</file>
     </qresource>
 </RCC>

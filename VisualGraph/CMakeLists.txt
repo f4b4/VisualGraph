@@ -30,9 +30,9 @@ set(MOCS
 	GraphCanvas.h
 )
 
-set(UIS 
-	VisualGraph.ui
-)
+#set(UIS 
+#	VisualGraph.ui
+#)
 
 set(RESOURCES 
 	VisualGraph.qrc
