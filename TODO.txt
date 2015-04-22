@@ -6,4 +6,4 @@ VisualGraph TODO
 * application icon
 * execute layout algorithms
   * parameter setting of layouts
-
+  * support GraphIO read functions
