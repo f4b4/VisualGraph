@@ -8,7 +8,7 @@ project (VisualGraph)
 
 # OGDF
 find_path(OGDF_INCLUDE_DIR ogdf/basic/basic.h
-	../OGDF
+	../ogdf/include
 )
 
 message(STATUS "OGDF_INCLUDE_DIR: ${OGDF_INCLUDE_DIR}")

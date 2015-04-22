@@ -91,11 +91,12 @@ void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttribute
 		float y2 = (float) (m_graphAttributes->y(item) + m_graphAttributes->height(item)/2.0);
 
 
-		V4 color;
-		if (ogdf::GraphAttributes::nodeColor & m_graphAttributes->attributes())
-			color = HtmlColorToOpenGlColor(m_graphAttributes->colorNode(item).cstr());
-		else
-			color = m_defaultNodeColor;
+		auto ogdfColor = m_graphAttributes->fillColor(item);
+		V4 color = V4(
+				ogdfColor.red() / 255.f,
+				ogdfColor.green() / 255.f,
+				ogdfColor.blue() / 255.f,
+				ogdfColor.alpha() / 255.f);
 		V4 lightColor = ToLightColor(color);
 
 		// vertices
@@ -191,7 +192,7 @@ void GraphPainter::Initialize()
 	int major = glload::GetMajorVersion();
 	int minor = glload::GetMinorVersion();
 
-	if (major < 3 || major == 3 && minor < 3)
+	if (major < 3 || (major == 3 && minor < 3))
 		throw std::runtime_error("VisualGraph requires OpenGL 3.3 or higher.");
 
 	m_shaders["default"] = std::make_shared<Shader>(g_defaultVertexShader, g_defaultFragmentShader);
