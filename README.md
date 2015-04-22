@@ -29,7 +29,7 @@ Lightweight graph viewer using GLUT.
 Prerequisites
 --------------------------------------------------------------------------------
 
-* OGDF
+* OGDF (github last commit from Jun 9, 2014)
 * QT4.8
 * OpenGL 3.3
 * cmake 2.6 or higher
