@@ -98,5 +98,6 @@ else ()
 	target_link_libraries(
 		VisualGraph 
 		${OGDF_LIBRARY}
+		pthread
 	)
 endif()

@@ -27,10 +27,10 @@ void Dump(const std::shared_ptr<ogdf::GraphAttributes>& graphAttributes);
 
 const char* ToString(const ogdf::Graph::NodeType& nodeType);
 const char* ToString(const ogdf::Graph::EdgeType& edgeType);
-const char* ToString(const ogdf::GraphAttributes::EdgeStyle& edgeStyle);
-const char* ToString(const ogdf::GraphAttributes::EdgeArrow& edgeArrow);
+const char* ToString(const ogdf::StrokeType& strokeType);
+const char* ToString(const ogdf::EdgeArrow& strokeType);
+const char* ToString(const ogdf::Shape nodeShape);
 
-const char* NodeShapeToString(int nodeShape);
 V4 HtmlColorToOpenGlColor(const char* color);
 V4 RandomColor();
 void RandomHtmlColor(std::array<char, 8>& buf);
@@ -70,10 +70,10 @@ inline void Dump(const std::shared_ptr<ogdf::GraphAttributes>& graphAttributes)
 	{
 		s << "Node ------------------------------------" << lineSep
 		  << "index=" << item->index() << propSep << "indeg=" << item->indeg() << propSep << "outdeg=" << item->outdeg() << lineSep
-		  << "colorNode=" << graphAttributes->colorNode(item).cstr() << lineSep
-		  << "labelNode=" << graphAttributes->labelNode(item).cstr() << lineSep
+		  << "colorNode=" << graphAttributes->fillColor(item) << lineSep
+		  << "labelNode=" << graphAttributes->label(item) << lineSep
 		  << "type=" << ToString(graphAttributes->type(item)) << lineSep
-		  << "shapeNode=" << NodeShapeToString(graphAttributes->shapeNode(item)) << lineSep
+		  << "shapeNode=" << ToString(graphAttributes->shape(item)) << lineSep
 		;
 	});
 
@@ -81,11 +81,11 @@ inline void Dump(const std::shared_ptr<ogdf::GraphAttributes>& graphAttributes)
 	{
 		s << "Edge ------------------------------------" << lineSep
 		  << "index=" << item->index() << lineSep
-		  << "colorEdge=" << graphAttributes->colorEdge(item).cstr() << lineSep
-		  << "labelEdge=" << graphAttributes->labelEdge(item).cstr() << lineSep
-		  << "styleEdge=" << ToString(graphAttributes->styleEdge(item)) << lineSep
+		  << "colorEdge=" << graphAttributes->strokeColor(item) << lineSep
+		  << "labelEdge=" << graphAttributes->label(item) << lineSep
+		  << "styleEdge=" << ToString(graphAttributes->strokeType(item)) << lineSep
 		  << "type=" << ToString(graphAttributes->type(item)) << lineSep
-		  << "arrowEdge=" << ToString(graphAttributes->arrowEdge(item)) << lineSep
+		  << "arrowEdge=" << ToString(graphAttributes->arrowType(item)) << lineSep
 		;
 	});
 
@@ -119,38 +119,38 @@ inline const char* ToString(const ogdf::Graph::EdgeType& edgeType)
 	}
 }
 
-inline const char* ToString(const ogdf::GraphAttributes::EdgeStyle& edgeStyle)
+inline const char* ToString(const ogdf::StrokeType& strokeType)
 {
 	// The line styles are preliminary the same as in QT.
-	switch (edgeStyle)
+	switch (strokeType)
 	{
-	case ogdf::GraphAttributes::esNoPen: return "esNoPen";
-	case ogdf::GraphAttributes::esSolid: return "esSolid";
-	case ogdf::GraphAttributes::esDash: return "esDash";
-	case ogdf::GraphAttributes::esDot: return "esDot";
-	case ogdf::GraphAttributes::esDashdot: return "esDashdot";
-	case ogdf::GraphAttributes::esDashdotdot: return "esDashdotdot";
+	case ogdf::stNone: return "stNoPen";
+	case ogdf::stSolid: return "stSolid";
+	case ogdf::stDash: return "stDash";
+	case ogdf::stDot: return "stDot";
+	case ogdf::stDashdot: return "stDashdot";
+	case ogdf::stDashdotdot: return "stDashdotdot";
 	default: return "unknown";
 	}
 }
 
-inline const char* ToString(const ogdf::GraphAttributes::EdgeArrow& edgeArrow)
+inline const char* ToString(const ogdf::EdgeArrow& edgeArrow)
 {
 	switch (edgeArrow)
 	{
-	case ogdf::GraphAttributes::none: return "none";
-	case ogdf::GraphAttributes::last: return "last";
-	case ogdf::GraphAttributes::first: return "first";
-	case ogdf::GraphAttributes::both: return "both";
-	case ogdf::GraphAttributes::undefined: return "undefined";
+	case ogdf::eaNone: return "none";
+	case ogdf::eaLast: return "last";
+	case ogdf::eaFirst: return "first";
+	case ogdf::eaBoth: return "both";
+	case ogdf::eaUndefined: return "undefined";
 	default: return "unknown";
 	}
 }
 
-inline const char* NodeShapeToString(int nodeShape)
+inline const char* ToString(const ogdf::Shape nodeShape)
 {
-	if (ogdf::GraphAttributes::rectangle == nodeShape) return "rectangle";
-	if (ogdf::GraphAttributes::oval == nodeShape) return "oval";
+	if (ogdf::shRect == nodeShape) return "shRect";
+	if (ogdf::shEllipse == nodeShape) return "shEllipse";
 	return "unknown";
 }
 

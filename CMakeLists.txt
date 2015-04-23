@@ -8,7 +8,7 @@ project (VisualGraph)
 
 # OGDF
 find_path(OGDF_INCLUDE_DIR ogdf/basic/basic.h
-	../OGDF
+	../ogdf/include
 )
 
 message(STATUS "OGDF_INCLUDE_DIR: ${OGDF_INCLUDE_DIR}")
@@ -60,10 +60,17 @@ else ()
 endif()
 
 if (UNIX)
-	# enable C++11, requires gcc 4.7 or higher
-	set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11") 
-# DEBUG:
-#	set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -g") 
+	if (CMAKE_COMPILER_IS_GNUCC)
+		if (CMAKE_BUILD_TYPE MATCHES Debug)
+			# #define _DEBUG
+			ADD_DEFINITIONS(-D_DEBUG)
+		endif ()
+
+		ADD_DEFINITIONS(-Wall)
+
+		# enable C++11, requires gcc 4.7 or higher
+		set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+	endif ()
 endif ()
 
 add_definitions (-D_UNICODE)

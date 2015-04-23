@@ -26,26 +26,29 @@ set (OgglSourceFiles
 	Types.h
 	Util.h
 	glload/source/gll_c.c
-	glload/source/gll_cpp.cpp
 	glload/source/gll_gl_ext.c
-	glload/source/gll_gl_ext.h
-	glload/source/gll_gl_ext_base.h
-	glload/source/gll_util.h
+	glload/source/gll_cpp.cpp
+	glload/include/glload/gl_3_3_comp.hpp
+	glload/include/glload/gll.hpp
 )
 
 if (WIN32)
 	set (OgglSourceFiles 
 		${OgglSourceFiles}
 		glload/source/wgll_ext.c
-		glload/source/wgll_ext.h
-		glload/source/wgll_ext_base.h	
 	)
+	set_source_files_properties(wgll_ext.c PROPERTIES COMPILE_FLAGS -w)
 elseif ()
 	set (OgglSourceFiles 
 		${OgglSourceFiles}
 		glload/source/glxl_ext.c
-		glload/source/glxl_ext.h
 	)
+	set_source_files_properties(glload/source/glxl_ext.c PROPERTIES COMPILE_FLAGS -w)
 endif ()
+
+# disable warnings for glload files
+set_source_files_properties(glload/source/gll_c.c      PROPERTIES COMPILE_FLAGS -w)
+set_source_files_properties(glload/source/gll_gl_ext.c PROPERTIES COMPILE_FLAGS -w)
+set_source_files_properties(glload/source/gll_cpp.cpp  PROPERTIES COMPILE_FLAGS -w)
 
 add_library (oggl ${OgglSourceFiles})

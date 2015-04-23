@@ -160,10 +160,13 @@ void VisualGraph::keyPressEvent(QKeyEvent* event)
 
 void VisualGraph::OpenFile(const std::string& filepath)
 {
-	ui.m_graphWidget->OpenFile(filepath);
-	std::stringstream ss;
-	ss << filepath << " - " << g_applicationName;
-	setWindowTitle(ss.str().c_str());
+    bool success = ui.m_graphWidget->OpenFile(filepath);
+
+    std::stringstream ss;
+    if (success) ss << g_applicationName << " - " << filepath;
+    else ss << g_applicationName;
+
+    setWindowTitle(ss.str().c_str());
 }
 
 void VisualGraph::AddAction(const char* text, const char* toolTip, const QKeySequence& key, const char* method)

@@ -23,7 +23,6 @@ void CreateGrid(ogdf::Graph& g, ogdf::GraphAttributes& ga, int cols, int rows)
 
 	ga.initAttributes(0x2FFFF);
 
-	std::array<char, 8> colorBuf;
 	for (int j = 0; j < rows; j++)
 	{
 		x = 0;
@@ -34,8 +33,12 @@ void CreateGrid(ogdf::Graph& g, ogdf::GraphAttributes& ga, int cols, int rows)
 			ga.y(v) = y;
 			ga.width(v) = width;
 			ga.height(v) = width;
-			RandomHtmlColor(colorBuf);
-			ga.colorNode(v) = colorBuf.data();
+			auto c = RandomColor();
+			ga.fillColor(v) = ogdf::Color(
+					(int)(c[0]*255.f),
+					(int)(c[1]*255.f),
+					(int)(c[2]*255.f),
+					(int)(c[3]*255.f));
 
 			if (i < (cols-1))
 				g.newEdge(v, nodes[i+1+j*rows]);

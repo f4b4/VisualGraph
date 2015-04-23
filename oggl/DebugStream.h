@@ -24,6 +24,12 @@
 // http://www.codeproject.com/Articles/1053/Using-an-output-stream-for-debugging
 // http://www.c.happycodings.com/Gnu-Linux/code21.html
 
+// example, conclude statement with std::endl to flush stream
+//
+//    #ifdef _DEBUG
+//        oggl::dout << "GraphWidget::OnHScrollValueChanged" << ": value=" << value << std::endl;
+//    #endif
+
 // view output:
 // * Windows: VisualStudio or DebugView
 // * linux: tail -f /var/log/syslog 
@@ -69,14 +75,6 @@ inline void DebugStringBuffer<char>::output_debug_string(const char *text)
 	syslog(LOG_INFO, text);
 	closelog();
 #endif // __linux__
-}
-
-template<>
-inline void DebugStringBuffer<wchar_t>::output_debug_string(const wchar_t *text)
-{
-#ifdef _WIN32
-    ::OutputDebugStringW(text);
-#endif
 }
 
 template<class CharT, class TraitsT = std::char_traits<CharT> >
