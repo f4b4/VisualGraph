@@ -318,8 +318,6 @@ void GraphWidget::ExecuteLayout()
 
 	ogdf::FMMMLayout fmmm;
 
-
-
 	fmmm.useHighLevelOptions(true);
 	fmmm.unitEdgeLength(g_defaultEdgeLength); 
 	fmmm.newInitialPlacement(true);
@@ -343,6 +341,9 @@ void GraphWidget::ExecuteLayout()
 
 void GraphWidget::CreateGraph()
 {
+	m_graphAttributes.reset();
+	m_graph.reset();
+
 	auto graph = std::make_shared<ogdf::Graph>();
 	auto graphAttributes = std::make_shared<ogdf::GraphAttributes>(*graph.get());
 

@@ -35,6 +35,8 @@ template <class CharT, class TraitsT = std::char_traits<CharT> >
 class DebugStringBuffer : 
     public std::basic_stringbuf<CharT, TraitsT>
 {
+	std::stringstream m_stream;
+
 public:
 
     virtual ~DebugStringBuffer()

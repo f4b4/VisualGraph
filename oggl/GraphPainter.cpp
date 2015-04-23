@@ -219,8 +219,7 @@ void GraphPainter::Initialize()
 {
 	// glload-initialize
 	if (LoadFunctions() == LS_LOAD_FAILED)
-	{
-	}
+		throw std::runtime_error("OpenGL function loading failed.");
 
 	int major = GetMajorVersion();
 	int minor = GetMinorVersion();

@@ -42,7 +42,7 @@ public:
 
 inline std::ostream& operator<< (std::ostream& stream, const V4& vec)
 {
-	stream << std::string("("); // << vec[0]; // << ", " << vec[1] << ", " << vec[2] << ", " << vec[3] << ")";
+	stream << std::string("(") << vec[0] << ", " << vec[1] << ", " << vec[2] << ", " << vec[3] << ")";
 	return stream;
 }
 

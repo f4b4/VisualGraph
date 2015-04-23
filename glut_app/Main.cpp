@@ -54,6 +54,7 @@ int main(int argc, char** argv)
 
 			std::stringstream ss;
 			ss << argv[1] << ".svg";
+			ss.flush();
 			graphAttributes->writeSVG(ss.str().c_str());
 			g_graphPainter.SetGraphAttributes(graphAttributes);
 		}
