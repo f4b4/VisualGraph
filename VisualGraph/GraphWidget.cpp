@@ -49,7 +49,7 @@ float ZoomSliderToScale(int value)
 
 int ScaleToZoomSlider(float scale)
 {
-	return std::log(scale) / std::log(2.f) * 100 + 800;
+	return (int) (std::log(scale) / std::log(2.f) * 100 + 800);
 }
 
 GraphWidget::GraphWidget(QWidget *parent)
@@ -241,19 +241,19 @@ void GraphWidget::SetScrollValues()
 	auto scrollableWorld = m_graphPainter->ScrollableWorld();
 	auto view = m_graphPainter->View();
 
-	int hPageStep = oggl::LinearProjection(
-		view.Width() + scrollableWorld.Left(),
-		scrollableWorld.Left(),
-		scrollableWorld.Right(),
-		g_scrollbarMinimum,
-		g_scrollbarMaximum);
+	int hPageStep = (int) oggl::LinearProjection(
+            view.Width() + scrollableWorld.Left(),
+            scrollableWorld.Left(),
+            scrollableWorld.Right(),
+            g_scrollbarMinimum,
+            g_scrollbarMaximum);
 	int hSingleStep = std::max(hPageStep / 10, 1);
-	int hPos = oggl::LinearProjection(
-		view.Left(),
-		scrollableWorld.Left(),
-		scrollableWorld.Right(),
-		g_scrollbarMinimum,
-		g_scrollbarMaximum);
+	int hPos = (int) oggl::LinearProjection(
+            view.Left(),
+            scrollableWorld.Left(),
+            scrollableWorld.Right(),
+            g_scrollbarMinimum,
+            g_scrollbarMaximum);
 	int hMaximum = g_scrollbarMaximum - hPageStep;
 	bool hEnabled = scrollableWorld.Width() > view.Width();
 
@@ -274,19 +274,19 @@ void GraphWidget::SetScrollValues()
 		m_hScroll->setValue(0);
 	}
 
-	int vPageStep = oggl::LinearProjection(
-		view.Height() + scrollableWorld.Top(),
-		scrollableWorld.Top(),
-		scrollableWorld.Bottom(),
-		g_scrollbarMinimum,
-		g_scrollbarMaximum);
+	int vPageStep = (int) oggl::LinearProjection(
+            view.Height() + scrollableWorld.Top(),
+            scrollableWorld.Top(),
+            scrollableWorld.Bottom(),
+            g_scrollbarMinimum,
+            g_scrollbarMaximum);
 	int vSingleStep = std::max(vPageStep / 10, 1);
-	int vPos = oggl::LinearProjection(
-		view.Top(),
-		scrollableWorld.Top(),
-		scrollableWorld.Bottom(),
-		g_scrollbarMinimum,
-		g_scrollbarMaximum);
+	int vPos = (int) oggl::LinearProjection(
+            view.Top(),
+            scrollableWorld.Top(),
+            scrollableWorld.Bottom(),
+            g_scrollbarMinimum,
+            g_scrollbarMaximum);
 	int vMaximum = g_scrollbarMaximum - vPageStep;
 	bool vEnabled = scrollableWorld.Height() > view.Height();
 
@@ -380,8 +380,8 @@ void GraphWidget::CreateGraph()
 {
 	Clear();
 
-	auto graph = std::make_unique<ogdf::Graph>();
-	auto graphAttributes = std::make_unique<ogdf::GraphAttributes>(*graph.get());
+	auto graph = std::make_shared<ogdf::Graph>();
+	auto graphAttributes = std::make_shared<ogdf::GraphAttributes>(*graph.get());
 
 	int cols = 32;
 	int rows = cols;
@@ -402,17 +402,7 @@ void GraphWidget::Clear()
 	// destroy old graph
 	m_graphPainter->SetGraphAttributes(nullptr);
 	m_graphAttributes.reset();
-	if (m_graph)
-	{
-		//m_graph->clear();
-
-		// HACK release instead of reset
-		// or crash in ~Graph()
-		// * bug in ogdf? (probable)
-		// * problem of Win10 or VS2013? (possible)
-		//m_graph.release();
-		m_graph.reset();
-	}
+	m_graph.reset();
 }
 
 void GraphWidget::wheelEvent(QWheelEvent *event)
@@ -494,8 +484,8 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 
 			float scale = m_graphPainter->Scale();
 
-			int idx = m_mouseStart[0] - pos.x();
-			int idy = m_mouseStart[1] - pos.y();
+			int idx = (int) (m_mouseStart[0] - pos.x());
+			int idy = (int) (m_mouseStart[1] - pos.y());
 
 			float dx = idx / scale;
 			float dy = idy / scale;

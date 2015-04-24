@@ -100,11 +100,12 @@ if(WIN32)
 		# Release version for all other builds in Visual Studio
 		optimized ${OGDF_RELEASE_LIBRARY}
 		# OGDF needs Psapi.lib
-		#Psapi
+		Psapi
 	)
 else ()
 	target_link_libraries(
 		VisualGraph 
 		${OGDF_LIBRARY}
+		pthread
 	)
 endif()

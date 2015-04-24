@@ -164,8 +164,8 @@ namespace oggl {
 
     inline char IntToChar(int val)
     {
-        if (val <= 9) return '0' + val;
-        if (val <= 15) return 'A' + val - 10;
+        if (val <= 9) return (char) ('0' + val);
+        if (val <= 15) return (char) ('A' + val - 10);
         throw std::runtime_error("IntToChar: invalid val.");
     }
 

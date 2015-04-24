@@ -29,10 +29,10 @@ Lightweight graph viewer using GLUT.
 Prerequisites
 --------------------------------------------------------------------------------
 
-* OGDF (github last commit from Jun 9, 2014)
-* QT4.8
+* OGDF (Current Release: v. 2012.07 (Sakura))
+* QT5
 * OpenGL 3.3
-* cmake 2.6 or higher
+* cmake 2.8.11 or higher
 
 Linux
 
@@ -40,13 +40,19 @@ Linux
 
 Windows
 
-* Visual Studio 2010 or higher
+* Visual Studio 2013 or higher
 
 Build
 --------------------------------------------------------------------------------
 
 VisualGraph uses cmake as meta build system, cmake generates on Linux a 
 Makefile and on Windows a Visual Studio solution. 
+
+### cmake configuration for QT5
+
+Set CMAKE_PREFIX_PATH to the directory containing 'bin/qmake' eg. 
+'/home/user/Qt5.4.1/5.4/gcc_64' or 'C:/Qt/Qt5.4.1/5.4/msvc2013'.
+
 
 ### Building on Linux
 
@@ -68,14 +74,14 @@ the Nouveau driver does not support accelerated OpenGL.
 
 The solution VisualGraph.sln should now be in the build directory.
 
-You can use Visual Studio 2012 but Platform Toolset has to be 
-"Visual Studio 2010 (v100)" (because QT4 is builded with VS2010).
+You can use Visual Studio 2015 but Platform Toolset has to be 
+"Visual Studio 2013 (v120)" (because QT5 is builded with VS2013).
 
-You need the QT 4.8.x VS2010 DLLs, if they are not in the path, copy the relevant 
+You need the QT5 VS2013 DLLs, if they are not in the path, copy the relevant 
 DLLs side by side to the VisualGraph.exe:
 
-	Debug build:   QtCored4.dll, QtGuid4.dll, QtOpenGLd4.dll
-	Release build: QtCore4.dll,  QtGui4.dll,  QtOpenGL4.dll
+	Debug build:   Qt5Cored.dll, Qt5Widgetsd.dll, Qt5Guid.dll, Qt5OpenGLd.dll, icu*53.dll
+	Release build: Qt5Core.dll, Qt5Widgets.dll, Qt5Gui.dll, Qt5OpenGL.dll, icu*53.dll
 
 ### OGDF library
 

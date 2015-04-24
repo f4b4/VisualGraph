@@ -190,7 +190,7 @@ void GraphPainter::Initialize()
 	int major = glload::GetMajorVersion();
 	int minor = glload::GetMinorVersion();
 
-	if (major < 3 || major == 3 && minor < 3)
+	if (major < 3 || (major == 3 && minor < 3))
 		throw std::runtime_error("VisualGraph requires OpenGL 3.3 or higher.");
 
 	m_shaders["default"] = std::make_shared<Shader>(g_defaultVertexShader, g_defaultFragmentShader);
@@ -211,7 +211,7 @@ void GraphPainter::Resize(int width, int height)
 	gl::LoadIdentity();
 	gl::Ortho(0, width, height, 0, -1, 1);
 
-	// Back to the modelview so we can draw stuff 
+	// Back to the modelview so we can draw stuff
 	gl::MatrixMode(gl::GL_MODELVIEW);
 	gl::LoadIdentity();
 
