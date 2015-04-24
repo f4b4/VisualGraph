@@ -13,12 +13,12 @@
 #include <QtCore/QtDebug>
 #include <QtCore/QFileInfo>
 #include <QtGui/QKeyEvent>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 
 VisualGraph* g_mainWindow;
 
-VisualGraph::VisualGraph(QWidget *parent, Qt::WFlags flags)
+VisualGraph::VisualGraph(QWidget *parent, Qt::WindowFlags flags)
 	: QMainWindow(parent, flags)
 {
 	QString path = QCoreApplication::applicationDirPath();

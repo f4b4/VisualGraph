@@ -2,9 +2,16 @@
 # VisualGraph/VisualGraph/CMakeLists.txt
 #
 
-# Set up QT4 and required components
-find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL REQUIRED)
-include(${QT_USE_FILE})
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Set up QT5 and required components
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
 
 # OpenGL
 find_package(OpenGL REQUIRED)
@@ -42,10 +49,8 @@ set(RESOURCES
 # Build and link the project
 
 # Let QT pre-process the files and add the generated files to the source 
-#list
-qt4_wrap_ui(GENERATED_SOURCES ${UIS})
-qt4_add_resources(GENERATED_SOURCES ${RESOURCES})
-qt4_wrap_cpp(GENERATED_SOURCES ${MOCS})
+# list
+qt5_wrap_ui(GENERATED_SOURCES ${UIS})
 
 source_group("Generated Sources - Do Not Edit" FILES ${GENERATED_SOURCES})
 
@@ -66,7 +71,7 @@ link_directories (
 add_executable (VisualGraph
 	MACOSX_BUNDLE
 	WIN32
-	# source files that are actually built direclty
+	# source files that are actually built directly
 	${SOURCES}
 	${GENERATED_SOURCES}
 
@@ -81,7 +86,10 @@ target_link_libraries(
 	VisualGraph 
 	oggl
 	${OPENGL_LIBRARIES}
-	${QT_LIBRARIES} 
+	Qt5::Core
+	Qt5::Widgets
+	Qt5::Gui
+	Qt5::OpenGL
 )
 
 if(WIN32)
@@ -92,12 +100,11 @@ if(WIN32)
 		# Release version for all other builds in Visual Studio
 		optimized ${OGDF_RELEASE_LIBRARY}
 		# OGDF needs Psapi.lib
-		Psapi
+		#Psapi
 	)
 else ()
 	target_link_libraries(
 		VisualGraph 
 		${OGDF_LIBRARY}
-		pthread
 	)
 endif()

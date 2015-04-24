@@ -1,5 +1,8 @@
 #pragma once
 
+// undefines the macros min and max which are specified in the windows headers
+#define NOMINMAX
+
 #include <QtOpenGL/qgl.h>
 #include <QtGui/QWheelEvent>
 

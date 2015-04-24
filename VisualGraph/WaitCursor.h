@@ -1,8 +1,8 @@
 #pragma once
 
 #include "VisualGraph.h"
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QWidget>
 
 class WaitCursor
 {

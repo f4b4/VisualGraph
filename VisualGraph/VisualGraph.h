@@ -10,15 +10,15 @@
 #include <memory>
 #include <functional>
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
 
 class VisualGraph : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	VisualGraph(QWidget *parent = 0, Qt::WFlags flags = 0);
+	VisualGraph(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~VisualGraph();
 
 	void LoadFile(const std::string& filepath);

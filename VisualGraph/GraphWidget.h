@@ -1,12 +1,15 @@
 #pragma once
-#include "qwidget.h"
+
+// undefines the macros min and max which are specified in the windows headers
+#define NOMINMAX
+
 #include "GraphCanvas.h"
 
 #include <memory>
 
-#include <QtGui/qwidget.h>
-#include <QtGui/qscrollbar.h>
-#include <QtGui/QSlider>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QSlider>
 
 #include <oggl/GraphPainter.h>
 
@@ -23,7 +26,7 @@ public:
 	void ZoomToOrignalSize();
 
 
-    bool OpenFile(const std::string& filepath);
+	bool OpenFile(const std::string& filepath);
 	void ExecuteLayout();
 
 	void CreateGraph();
@@ -31,7 +34,7 @@ public:
 	void Scale(float scale);
 	void Translate(float dx, float dy);
 
-public slots:
+	public slots:
 	void OnZoomSliderValueChanged(int value);
 	void OnHScrollValueChanged(int value);
 	void OnVScrollValueChanged(int value);
@@ -46,6 +49,7 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent* event);
 
 private:
+	void Clear();
 	void SetScrollValues();
 
 private:
@@ -53,8 +57,10 @@ private:
 
 	std::shared_ptr<ogdf::GraphAttributes> m_graphAttributes;
 	std::shared_ptr<ogdf::Graph> m_graph;
+	//ogdf::GraphAttributes m_graphAttributes;
+	//ogdf::Graph m_graph;
 
-	std::shared_ptr<GraphCanvas> m_canvas;
+	GraphCanvas* m_canvas;
 	QSlider* m_zoomSlider;
 	QScrollBar* m_hScroll;
 	QScrollBar* m_vScroll;

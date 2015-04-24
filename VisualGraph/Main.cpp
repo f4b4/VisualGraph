@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 #include <QMessageBox>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 
 #ifdef _WIN32
 

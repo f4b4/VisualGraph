@@ -3,8 +3,8 @@
 
 #include "WaitCursor.h"
 
-#include <QtGui/QWidget>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMessageBox>
 
 const char g_applicationName[] = "Visual Graph";
 
