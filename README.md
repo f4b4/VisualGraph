@@ -29,8 +29,8 @@ Lightweight graph viewer using GLUT.
 Prerequisites
 --------------------------------------------------------------------------------
 
-* OGDF (Current Release: v. 2012.07 (Sakura))
-* QT5
+* OGDF (Current Release: v. 2015.05 (Baobab))
+* QT5 (testet with QT5.5))
 * OpenGL 3.3
 * cmake 2.8.11 or higher
 
@@ -122,4 +122,4 @@ All files in the VisualGraph distribution are copyrighted.
 
 All files with the exception of the GL Load library:
 
-Copyright (C) 2013 The VisualGraph Authors
+Copyright (C) 2016 The VisualGraph Authors
