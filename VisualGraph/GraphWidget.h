@@ -55,10 +55,8 @@ private:
 private:
 	std::shared_ptr<oggl::GraphPainter> m_graphPainter;
 
-	std::shared_ptr<ogdf::GraphAttributes> m_graphAttributes;
-	std::shared_ptr<ogdf::Graph> m_graph;
-	//ogdf::GraphAttributes m_graphAttributes;
-	//ogdf::Graph m_graph;
+	ogdf::Graph m_graph;
+	ogdf::GraphAttributes m_graphAttributes;
 
 	GraphCanvas* m_canvas;
 	QSlider* m_zoomSlider;

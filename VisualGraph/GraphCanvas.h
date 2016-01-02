@@ -3,12 +3,12 @@
 // undefines the macros min and max which are specified in the windows headers
 #define NOMINMAX
 
-#include <QtOpenGL/qgl.h>
+#include <QOpenGLWidget>
 #include <QtGui/QWheelEvent>
 
 #include <oggl/GraphPainter.h>
 
-class GraphCanvas : public QGLWidget
+class GraphCanvas : public QOpenGLWidget
 {
 	Q_OBJECT
 

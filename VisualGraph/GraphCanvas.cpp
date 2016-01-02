@@ -1,7 +1,7 @@
 #include "GraphCanvas.h"
 
 GraphCanvas::GraphCanvas(QWidget* parent, const std::shared_ptr<oggl::GraphPainter>& graphPainter)
-	: QGLWidget(parent)
+	: QOpenGLWidget(parent)
 	, m_graphPainter(graphPainter)
 {
 }

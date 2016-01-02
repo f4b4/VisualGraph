@@ -12,9 +12,9 @@
 
 #include <QtCore/QtDebug>
 #include <QtCore/QFile>
-#include <QtCore/QEvent>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
+#include <QtGui/qevent.h>
 
 #include <limits>
 #include <algorithm>
@@ -26,6 +26,7 @@
 #include <ogdf/energybased/FMMMLayout.h>
 #include <ogdf/basic/graph_generators.h>
 #include <ogdf/layered/DfsAcyclicSubgraph.h>
+#include <ogdf/fileformats/GraphIO.h>
 
 const int g_scrollbarWidth = 16;
 const int g_scrollbarMinimum = 0;
@@ -53,7 +54,17 @@ int ScaleToZoomSlider(float scale)
 }
 
 GraphWidget::GraphWidget(QWidget *parent)
-	: QWidget(parent), m_mouseMoveStarted(false), m_eventsEnabled(true)
+	: QWidget(parent)
+	, m_graphAttributes(
+		m_graph,
+		ogdf::GraphAttributes::nodeGraphics |
+		ogdf::GraphAttributes::edgeGraphics |
+		ogdf::GraphAttributes::nodeLabel |
+		ogdf::GraphAttributes::edgeStyle |
+		ogdf::GraphAttributes::nodeStyle |
+		ogdf::GraphAttributes::nodeTemplate)
+	, m_mouseMoveStarted(false)
+	, m_eventsEnabled(true)
 {
 	m_graphPainter = std::make_shared<oggl::GraphPainter>();
 	m_canvas = new GraphCanvas(this, m_graphPainter);
@@ -83,8 +94,6 @@ GraphWidget::~GraphWidget()
 {
 	// m_vScroll, m_hScroll, m_zoomSlider
 	// are deleted by QT-Framework
-
-	Clear();
 }
 
 void GraphWidget::Zoom(bool zoomInto)
@@ -318,21 +327,12 @@ bool GraphWidget::OpenFile(const std::string &filepath)
 
 	Clear();
 
-	auto graph = std::make_shared<ogdf::Graph>();
-	auto graphAttributes = std::make_shared<ogdf::GraphAttributes>(*graph.get());
-
-	graphAttributes->initAttributes(graphAttributes->attributes() |
-		ogdf::GraphAttributes::nodeStyle |
-		ogdf::GraphAttributes::nodeColor);
-
-	bool readSuccess = graphAttributes->readGML(*graph.get(), filepath.c_str());
+	bool readSuccess = ogdf::GraphIO::readGML(
+		m_graphAttributes, m_graph, filepath.c_str());
 
 	if (readSuccess)
 	{
-		m_graph = graph;
-		m_graphAttributes = graphAttributes;
-
-		m_graphPainter->SetGraphAttributes(m_graphAttributes);
+		m_graphPainter->SetGraphAttributes(&m_graphAttributes);
 		m_graphPainter->ZoomToFit();
 	}
 
@@ -344,32 +344,29 @@ bool GraphWidget::OpenFile(const std::string &filepath)
 
 void GraphWidget::ExecuteLayout()
 {
-	auto &graphAttributes = m_graphAttributes;
-	if (!graphAttributes) throw std::runtime_error("No graph is loaded.");
-
 	ogdf::FMMMLayout fmmm;
 	fmmm.useHighLevelOptions(true);
 	fmmm.unitEdgeLength(g_defaultEdgeLength);
 	fmmm.newInitialPlacement(true);
 	fmmm.qualityVersusSpeed(ogdf::FMMMLayout::qvsNiceAndIncredibleSpeed);
 
-	fmmm.call(*graphAttributes.get());
+	fmmm.call(m_graphAttributes);
 
 #ifdef _DEBUG
 	oggl::dout << "numberOfNodes="
-		<< graphAttributes->constGraph().numberOfNodes()
+		<< m_graphAttributes.constGraph().numberOfNodes()
 		<< ","
 		<< "numberOfEdges="
-		<< graphAttributes->constGraph().numberOfEdges()
+		<< m_graphAttributes.constGraph().numberOfEdges()
 		<< std::endl;
 	oggl::dout << "bounds="
-		<< graphAttributes->boundingBox().width()
+		<< m_graphAttributes.boundingBox().width()
 		<< ","
-		<< graphAttributes->boundingBox().height()
+		<< m_graphAttributes.boundingBox().height()
 		<< std::endl;
 #endif
 
-	m_graphPainter->SetGraphAttributes(graphAttributes);
+	m_graphPainter->SetGraphAttributes(&m_graphAttributes);
 	m_graphPainter->ZoomToFit();
 
 	SetScrollValues();
@@ -380,17 +377,11 @@ void GraphWidget::CreateGraph()
 {
 	Clear();
 
-	auto graph = std::make_shared<ogdf::Graph>();
-	auto graphAttributes = std::make_shared<ogdf::GraphAttributes>(*graph.get());
-
 	int cols = 32;
 	int rows = cols;
-	oggl::CreateGrid(*graph.get(), *graphAttributes.get(), cols, rows);
+	oggl::CreateGrid(m_graph, m_graphAttributes, cols, rows);
 
-	m_graph = std::move(graph);
-	m_graphAttributes = std::move(graphAttributes);
-
-	m_graphPainter->SetGraphAttributes(m_graphAttributes);
+	m_graphPainter->SetGraphAttributes(&m_graphAttributes);
 	m_graphPainter->ZoomToFit();
 
 	SetScrollValues();
@@ -399,10 +390,10 @@ void GraphWidget::CreateGraph()
 
 void GraphWidget::Clear()
 {
-	// destroy old graph
 	m_graphPainter->SetGraphAttributes(nullptr);
-	m_graphAttributes.reset();
-	m_graph.reset();
+	m_graph.clear();
+	m_graphAttributes.initAttributes(m_graphAttributes.attributes());
+	m_canvas->update();
 }
 
 void GraphWidget::wheelEvent(QWheelEvent *event)

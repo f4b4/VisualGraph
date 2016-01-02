@@ -8,52 +8,51 @@
 
 #include <crtdbg.h>
 
-class MemDiff
-{
+class MemDiff {
 	_CrtMemState m_memState;
 
 public:
-	MemDiff()
-	{
+	MemDiff() {
 		_CrtMemCheckpoint(&m_memState);
 	}
 
-	~MemDiff()
-	{
+	~MemDiff() {
 		_CrtMemState newMemState, diffMemState;
 		_CrtMemCheckpoint(&newMemState);
-		_CrtMemDifference(&diffMemState, &m_memState, &newMemState); 
+		_CrtMemDifference(&diffMemState, &m_memState, &newMemState);
 		_CrtMemDumpStatistics(&diffMemState);
 	}
 };
 #endif // _WIN32
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 #ifdef _WIN32
 	MemDiff memDiff;
 	{
 #endif
 
-	QApplication a(argc, argv);
-	a.setStyle("Cleanlooks");
-	VisualGraph w;
-	g_mainWindow = &w;
+		try {
+			QApplication a(argc, argv);
+			a.setStyle("Cleanlooks");
 
-	try
-	{
-		w.show();
-		if (argc > 1)
-			w.LoadFile(argv[1]);
-		else
-			w.OnCreateGraph();
+			VisualGraph w;
+			g_mainWindow = &w;
+			w.show();
+			if (argc > 1)
+				w.LoadFile(argv[1]);
+			else
+				w.OnCreateGraph();
 
-		return a.exec();
-	}
-	catch (std::exception &e)
-	{
-		QMessageBox::critical(nullptr, g_applicationName, e.what());
-	}
+			return a.exec();
+		}
+		catch (std::exception &e) {
+			QMessageBox::critical(nullptr, g_applicationName, e.what());
+			return 1;
+		}
+		catch (...) {
+			QMessageBox::critical(nullptr, g_applicationName, "VisualGraph crashed.");
+			return 1;
+		}
 
 
 #ifdef _WIN32
@@ -65,8 +64,7 @@ int main(int argc, char *argv[])
 
 #include <Windows.h>
 
-int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
-{
+int CALLBACK WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	return main(__argc, __argv);
 }
 

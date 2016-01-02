@@ -38,7 +38,8 @@ Vertex CreateVertex(float x, float y, float z, V4 color)
 }
 
 GraphPainter::GraphPainter()
-	: m_margin(20)
+	: m_graphAttributes(nullptr)
+	, m_margin(20)
 	, m_backgroundColor(1, 1, 1, g_defaultAValue)
 	, m_defaultNodeColor(0.8f, 0.8f, 0.8f, g_defaultAValue)
 	, m_nodeBorderColor(0, 0, 0, 1)
@@ -70,7 +71,7 @@ void GraphPainter::Reset()
 	m_edgesVertexBuffer = 0;
 }
 
-void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttributes>& graphAttributes)
+void GraphPainter::SetGraphAttributes(const ogdf::GraphAttributes* graphAttributes)
 {
 	Reset();
 
@@ -91,11 +92,8 @@ void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttribute
 		float y2 = (float)(m_graphAttributes->y(item) + m_graphAttributes->height(item) / 2.0);
 
 
-		V4 color;
-		if (ogdf::GraphAttributes::nodeColor & m_graphAttributes->attributes())
-			color = HtmlColorToOpenGlColor(m_graphAttributes->colorNode(item).cstr());
-		else
-			color = m_defaultNodeColor;
+		V4 color = OgdfColorToOpenGlColor(m_graphAttributes->fillColor(item));
+		//color = m_defaultNodeColor;
 		V4 lightColor = ToLightColor(color);
 
 		// vertices
@@ -105,21 +103,21 @@ void GraphPainter::SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttribute
 		nodesVectorVec.push_back(CreateVertex(x2, y1, 0.f, lightColor));
 
 		// indices
-		nodesIndexVec.push_back(i + 0);
-		nodesIndexVec.push_back(i + 1);
-		nodesIndexVec.push_back(i + 3);
-		nodesIndexVec.push_back(i + 1);
-		nodesIndexVec.push_back(i + 2);
-		nodesIndexVec.push_back(i + 3);
+		nodesIndexVec.push_back((unsigned)i + 0);
+		nodesIndexVec.push_back((unsigned)i + 1);
+		nodesIndexVec.push_back((unsigned)i + 3);
+		nodesIndexVec.push_back((unsigned)i + 1);
+		nodesIndexVec.push_back((unsigned)i + 2);
+		nodesIndexVec.push_back((unsigned)i + 3);
 
-		nodesBorderIndexVec.push_back(i + 0);
-		nodesBorderIndexVec.push_back(i + 1);
-		nodesBorderIndexVec.push_back(i + 1);
-		nodesBorderIndexVec.push_back(i + 2);
-		nodesBorderIndexVec.push_back(i + 2);
-		nodesBorderIndexVec.push_back(i + 3);
-		nodesBorderIndexVec.push_back(i + 3);
-		nodesBorderIndexVec.push_back(i + 0);
+		nodesBorderIndexVec.push_back((unsigned)i + 0);
+		nodesBorderIndexVec.push_back((unsigned)i + 1);
+		nodesBorderIndexVec.push_back((unsigned)i + 1);
+		nodesBorderIndexVec.push_back((unsigned)i + 2);
+		nodesBorderIndexVec.push_back((unsigned)i + 2);
+		nodesBorderIndexVec.push_back((unsigned)i + 3);
+		nodesBorderIndexVec.push_back((unsigned)i + 3);
+		nodesBorderIndexVec.push_back((unsigned)i + 0);
 
 		i += 4;
 	});
@@ -247,7 +245,7 @@ void GraphPainter::Paint()
 		gl::BindBuffer(gl::GL_ARRAY_BUFFER, m_edgesVertexBuffer);
 		gl::EnableVertexAttribArray(0);
 		gl::VertexAttribPointer(0, 4, gl::GL_FLOAT, gl::GL_FALSE, 0, 0);
-		gl::DrawArrays(gl::GL_LINES, 0, m_edgesVertexCount * 4);
+		gl::DrawArrays(gl::GL_LINES, 0, (int)m_edgesVertexCount * 4);
 		gl::DisableVertexAttribArray(0);
 
 		edgesShader->Use(false);
@@ -266,7 +264,7 @@ void GraphPainter::Paint()
 		gl::EnableVertexAttribArray(1);
 		gl::VertexAttribPointer(1, 4, gl::GL_FLOAT, gl::GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(float) * 4));
 
-		gl::DrawElements(gl::GL_TRIANGLES, m_nodesIndexCount, gl::GL_UNSIGNED_INT, NULL);
+		gl::DrawElements(gl::GL_TRIANGLES, (int)m_nodesIndexCount, gl::GL_UNSIGNED_INT, NULL);
 
 		gl::DisableVertexAttribArray(0);
 		gl::DisableVertexAttribArray(1);
@@ -285,7 +283,7 @@ void GraphPainter::Paint()
 		gl::EnableVertexAttribArray(0);
 		gl::VertexAttribPointer(0, 4, gl::GL_FLOAT, gl::GL_FALSE, sizeof(Vertex), 0);
 
-		gl::DrawElements(gl::GL_LINES, m_nodesBorderIndexCount, gl::GL_UNSIGNED_INT, NULL);
+		gl::DrawElements(gl::GL_LINES, (int)m_nodesBorderIndexCount, gl::GL_UNSIGNED_INT, NULL);
 
 		gl::DisableVertexAttribArray(0);
 

@@ -27,13 +27,13 @@ namespace oggl {
 
     const char* ToString(const ogdf::Graph::NodeType& nodeType);
     const char* ToString(const ogdf::Graph::EdgeType& edgeType);
-    const char* ToString(const ogdf::GraphAttributes::EdgeStyle& edgeStyle);
-    const char* ToString(const ogdf::GraphAttributes::EdgeArrow& edgeArrow);
+    const char* ToString(const ogdf::StrokeType& strokeType);
+    const char* ToString(const ogdf::EdgeArrow& edgeArrow);
 
-    const char* NodeShapeToString(int nodeShape);
-    V4 HtmlColorToOpenGlColor(const char* color);
+	const char* NodeShapeToString(const ogdf::Shape& shape);
+    V4 OgdfColorToOpenGlColor(const ogdf::Color& color);
     V4 RandomColor();
-    void RandomHtmlColor(std::array<char, 8>& buf);
+    ogdf::Color RandomOgdfColor();
     V4 ToLightColor(V4 color);
     V4 RgbToHsv(V4 rgb);
     V4 HsvToRgb(V4 hsv);
@@ -46,19 +46,19 @@ namespace oggl {
             func(first);
     }
 
-    inline void Dump(const std::shared_ptr<ogdf::GraphAttributes>& graphAttributes)
+    inline void Dump(const ogdf::GraphAttributes& graphAttributes)
     {
         const auto attrSep = ", ";
         const auto propSep = "; ";
         const auto lineSep = "\n";
 
-        const ogdf::DRect& bounds = graphAttributes->boundingBox();
+        const ogdf::DRect& bounds = graphAttributes.boundingBox();
 
         auto& s = oggl::dout;
 
         s << "Graph ------------------------------------" << lineSep
-            << "numberOfNodes=" << graphAttributes->constGraph().numberOfNodes() << attrSep
-            << "numberOfEdges=" << graphAttributes->constGraph().numberOfEdges() << lineSep
+            << "numberOfNodes=" << graphAttributes.constGraph().numberOfNodes() << attrSep
+            << "numberOfEdges=" << graphAttributes.constGraph().numberOfEdges() << lineSep
             ;
 
         s << "bounds="
@@ -66,26 +66,26 @@ namespace oggl {
             << bounds.p2().m_x << attrSep << bounds.p2().m_y << lineSep
             ;
 
-        for_each(graphAttributes->constGraph().firstNode(), [&](const ogdf::node& item)
+        for_each(graphAttributes.constGraph().firstNode(), [&](const ogdf::node& item)
         {
             s << "Node ------------------------------------" << lineSep
                 << "index=" << item->index() << propSep << "indeg=" << item->indeg() << propSep << "outdeg=" << item->outdeg() << lineSep
-                << "colorNode=" << graphAttributes->colorNode(item).cstr() << lineSep
-                << "labelNode=" << graphAttributes->labelNode(item).cstr() << lineSep
-                << "type=" << ToString(graphAttributes->type(item)) << lineSep
-                << "shapeNode=" << NodeShapeToString(graphAttributes->shapeNode(item)) << lineSep
+                << "colorNode=" << graphAttributes.fillColor(item).toString().c_str() << lineSep
+                << "labelNode=" << graphAttributes.label(item).c_str() << lineSep
+                << "type=" << ToString(graphAttributes.type(item)) << lineSep
+                << "shapeNode=" << NodeShapeToString(graphAttributes.shape(item)) << lineSep
                 ;
         });
 
-        for_each(graphAttributes->constGraph().firstEdge(), [&](const ogdf::edge& item)
+        for_each(graphAttributes.constGraph().firstEdge(), [&](const ogdf::edge& item)
         {
             s << "Edge ------------------------------------" << lineSep
                 << "index=" << item->index() << lineSep
-                << "colorEdge=" << graphAttributes->colorEdge(item).cstr() << lineSep
-                << "labelEdge=" << graphAttributes->labelEdge(item).cstr() << lineSep
-                << "styleEdge=" << ToString(graphAttributes->styleEdge(item)) << lineSep
-                << "type=" << ToString(graphAttributes->type(item)) << lineSep
-                << "arrowEdge=" << ToString(graphAttributes->arrowEdge(item)) << lineSep
+                << "colorEdge=" << graphAttributes.strokeColor(item).toString().c_str() << lineSep
+                << "labelEdge=" << graphAttributes.label(item).c_str() << lineSep
+                << "styleEdge=" << ToString(graphAttributes.strokeType(item)) << lineSep
+                << "type=" << ToString(graphAttributes.type(item)) << lineSep
+                << "arrowEdge=" << ToString(graphAttributes.arrowType(item)) << lineSep
                 ;
         });
 
@@ -108,50 +108,63 @@ namespace oggl {
         }
     }
 
-    inline const char* ToString(const ogdf::Graph::EdgeType& edgeType)
-    {
+	inline const char* ToString(const ogdf::Graph::EdgeType& edgeType)
+	{
         switch (edgeType)
         {
-        case ogdf::Graph::association: return "association";
-        case ogdf::Graph::generalization: return "generalization";
-        case ogdf::Graph::dependency: return "dependency";
-        default: return "unknown";
+		case ogdf::Graph::association: return "association";
+		case ogdf::Graph::generalization: return "generalization";
+		case ogdf::Graph::dependency: return "dependency";
+		default: return "unknown";
         }
-    }
+	}
 
-    inline const char* ToString(const ogdf::GraphAttributes::EdgeStyle& edgeStyle)
+    inline const char* ToString(const ogdf::StrokeType& strokeType)
     {
-        // The line styles are preliminary the same as in QT.
-        switch (edgeStyle)
+        switch (strokeType)
         {
-        case ogdf::GraphAttributes::esNoPen: return "esNoPen";
-        case ogdf::GraphAttributes::esSolid: return "esSolid";
-        case ogdf::GraphAttributes::esDash: return "esDash";
-        case ogdf::GraphAttributes::esDot: return "esDot";
-        case ogdf::GraphAttributes::esDashdot: return "esDashdot";
-        case ogdf::GraphAttributes::esDashdotdot: return "esDashdotdot";
-        default: return "unknown";
+        case ogdf::stNone: return "none";
+        case ogdf::stSolid: return "solid";
+		case ogdf::stDash: return "dash";
+		case ogdf::stDot: return "dotted";
+		case ogdf::stDashdot: return "dash-dot";
+		case ogdf::stDashdotdot: return "dash-dot-dot";
+		default: return "unknown";
         }
     }
 
-    inline const char* ToString(const ogdf::GraphAttributes::EdgeArrow& edgeArrow)
+    inline const char* ToString(const ogdf::EdgeArrow& edgeArrow)
     {
         switch (edgeArrow)
         {
-        case ogdf::GraphAttributes::none: return "none";
-        case ogdf::GraphAttributes::last: return "last";
-        case ogdf::GraphAttributes::first: return "first";
-        case ogdf::GraphAttributes::both: return "both";
-        case ogdf::GraphAttributes::undefined: return "undefined";
+        case ogdf::eaNone: return "none";
+        case ogdf::eaLast: return "last";
+        case ogdf::eaFirst: return "first";
+        case ogdf::eaBoth: return "both";
+        case ogdf::eaUndefined: return "undefined";
         default: return "unknown";
         }
     }
 
-    inline const char* NodeShapeToString(int nodeShape)
+    inline const char* NodeShapeToString(const ogdf::Shape& shape)
     {
-        if (ogdf::GraphAttributes::rectangle == nodeShape) return "rectangle";
-        if (ogdf::GraphAttributes::oval == nodeShape) return "oval";
-        return "unknown";
+		switch (shape) {
+		case ogdf::shRect: return "shRect";
+		case ogdf::shRoundedRect: return "shRoundedRect";
+		case ogdf::shEllipse: return "shEllipse";
+		case ogdf::shTriangle: return "shTriangle";
+		case ogdf::shPentagon: return "shPentagon";
+		case ogdf::shHexagon: return "shHexagon";
+		case ogdf::shOctagon: return "shOctagon";
+		case ogdf::shRhomb: return "shRhomb";
+		case ogdf::shTrapeze: return "shTrapeze";
+		case ogdf::shParallelogram: return "shParallelogram";
+		case ogdf::shInvTriangle: return "shInvTriangle";
+		case ogdf::shInvTrapeze: return "shInvTrapeze";
+		case ogdf::shInvParallelogram: return "shInvParallelogram";
+		case ogdf::shImage: return "shImage";
+		default: return "unknown";
+		}
     }
 
     inline int CharToInt(char c)
@@ -175,16 +188,15 @@ namespace oggl {
         buf[1] = IntToChar(val & 0xF);
     }
 
-    inline V4 HtmlColorToOpenGlColor(const char* color)
+    inline V4 OgdfColorToOpenGlColor(const ogdf::Color& color)
     {
         const V4 defaultColor(0, 0, 0, g_defaultAValue);
-        if (strlen(color) != 7) return defaultColor;
 
         V4 colorGl;
-        colorGl[0] = (float)((CharToInt(color[1]) << 4) + CharToInt(color[2])) / 255.f;
-        colorGl[1] = (float)((CharToInt(color[3]) << 4) + CharToInt(color[4])) / 255.f;
-        colorGl[2] = (float)((CharToInt(color[5]) << 4) + CharToInt(color[6])) / 255.f;
-        colorGl[3] = g_defaultAValue;
+		colorGl[0] = color.red() / 255.f;
+		colorGl[1] = color.green() / 255.f;
+		colorGl[2] = color.blue() / 255.f;
+		colorGl[3] = g_defaultAValue;
 
         return colorGl;
     }
@@ -198,14 +210,14 @@ namespace oggl {
         return HsvToRgb(hsv);
     }
 
-    inline void RandomHtmlColor(std::array<char, 8>& buf)
+    inline ogdf::Color RandomOgdfColor()
     {
         auto c = RandomColor();
-        buf[0] = '#';
-        buf[7] = 0;
-        IntToChar(&buf[1], (int)(c[0] * 255.f));
-        IntToChar(&buf[3], (int)(c[1] * 255.f));
-        IntToChar(&buf[5], (int)(c[2] * 255.f));
+		return ogdf::Color(
+			(int)(c[0] * 255.f),
+			(int)(c[1] * 255.f),
+			(int)(c[2] * 255.f),
+			(int)(c[3] * 255.f));
     }
 
     inline V4 ToLightColor(V4 color)

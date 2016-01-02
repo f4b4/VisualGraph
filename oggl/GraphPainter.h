@@ -19,7 +19,7 @@ public:
 	GraphPainter();
 	~GraphPainter();
 
-	void SetGraphAttributes(const std::shared_ptr<ogdf::GraphAttributes>& graphAttributes);
+	void SetGraphAttributes(const ogdf::GraphAttributes* graphAttributes);
 
 	float Scale() const;
 	void Scale(float scale);
@@ -51,7 +51,7 @@ private:
 	void Reset();
 
 private:
-	std::shared_ptr<ogdf::GraphAttributes> m_graphAttributes;
+	const ogdf::GraphAttributes* m_graphAttributes;
 
 	// layout
 	float m_margin;

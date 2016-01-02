@@ -16,16 +16,14 @@ namespace oggl {
 
         int nodeCount = cols * rows;
 
+		ogdf::LayoutStandards::setDefaultEdgeStroke(
+			ogdf::Stroke(ogdf::Color::Black));
+
         std::vector<ogdf::node> nodes(nodeCount);
 
         for (int i = 0; i < nodeCount; i++)
             nodes[i] = g.newNode();
 
-        ga.initAttributes(ga.attributes() |
-            ogdf::GraphAttributes::nodeStyle |
-            ogdf::GraphAttributes::nodeColor);
-
-        std::array<char, 8> colorBuf;
         for (int j = 0; j < rows; j++)
         {
             x = 0;
@@ -36,8 +34,7 @@ namespace oggl {
                 ga.y(v) = y;
                 ga.width(v) = width;
                 ga.height(v) = width;
-                RandomHtmlColor(colorBuf);
-                ga.colorNode(v) = colorBuf.data();
+				ga.fillColor(v) = RandomOgdfColor();
 
                 if (i < (cols - 1))
                     g.newEdge(v, nodes[i + 1 + j*rows]);
