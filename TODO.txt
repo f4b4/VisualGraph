@@ -7,3 +7,4 @@ VisualGraph TODO
 * execute layout algorithms
   * parameter setting of layouts
   * support GraphIO read functions
+* 
